@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radio Najlepsza</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    background: linear-gradient(to bottom, #000428, #004e92);
+    color: #fff;
+}
+
+header {
+    background-color: #0056b3;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+header h1 { color:#fff; margin:0; cursor:pointer; font-weight:bold; }
+header nav.nav-right { display:flex; gap:15px; }
+header nav.nav-right button {
+    background:none; border:none; color:#fff; font-size:16px; padding:5px 10px; cursor:pointer; transition:0.3s;
+}
+header nav.nav-right button:hover { background-color: rgba(255,255,255,0.2); border-radius:5px; }
+
+.content { padding:20px; }
+.content-section { transition:opacity 0.5s ease-in-out; margin-bottom:30px; }
+
+.card {
+    background-color: rgba(0,0,0,0.7);
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+audio { width:100%; max-width:400px; outline:none; margin-bottom:15px; }
+
+.comment {
+    margin-top:10px; padding:5px; background: rgba(255,255,255,0.1);
+    border-radius:5px; display:flex; justify-content:space-between; align-items:center;
+}
+
+input, button { padding:8px; margin-top:10px; border-radius:5px; border:none; }
+button { background-color:#0056b3; color:#fff; cursor:pointer; }
+button:hover { background-color:#0077ff; }
+
+.social { text-align:center; margin-bottom:30px; }
+.social a { color:#00f; text-decoration:none; margin:0 10px; }
+.social a:hover { text-decoration:underline; }
+
+footer { background-color:#0056b3; text-align:center; padding:10px 0; font-weight:bold; }
+</style>
+</head>
+<body>
+
+<header>
+    <h1 onclick="location.reload()">Radio Najlepsza</h1>
+    <nav class="nav-right">
+        <button onclick="showSection('radio')">🎧 Radio</button>
+        <button onclick="showSection('news')">😂 Wiadomości</button>
+        <button onclick="showSection('contact')">📞 Kontakt</button>
+        <button onclick="showSection('poll')">📊 Ankieta</button>
+        <button onclick="showSection('news-serious')">📰 Aktualności</button>
+    </nav>
+</header>
+
+<div class="content">
+
+<!-- Radio -->
+<div id="radio" class="content-section">
+    <div class="card">
+        <audio id="radioAudio" src="http://Marcel88.on-air.fm/" type="audio/mpeg" controls autoplay></audio>
+        <p>Radio Najlepsza – Twoja ulubiona spokojna muzyka w pracy i w domu.</p>
+        <p>Niedługo ruszamy ze startem – powiadomimy o godzinach emisji:</p>
+        <p>Poniedziałek–Piątek: 18:00<br>Weekend: 9:00 – 18:00. Głownie muzyka u nas spokojna nostalgiczna ale ejsli chcecie raz na jaki czas inne to zapraszam to udziału w akniecie na naszej stronie!!
+
+Włąsciel Radia Marcel Kamiński wszystkie prawa należą to Radia Najlepsza jeśli ktoś cce co z radia nagrać prosze o pozwolenie.
+</p>
+    </div>
+</div>
+
+<!-- Śmieszne Wiadomości -->
+<div id="news" class="content-section" style="display:none;">
+    <div class="card">
+        <h2>Śmieszne Wiadomości</h2>
+        <div id="newsList"></div>
+        <input type="text" id="commentInput" placeholder="Dodaj komentarz">
+        <button onclick="addComment()">Dodaj</button>
+    </div>
+</div>
+
+<!-- Kontakt -->
+<div id="contact" class="content-section" style="display:none;">
+    <div class="card">
+        <h2>Kontakt</h2>
+        <p>E-mail: <a href="mailto:marcelkaminski95@gmail.com">marcelkaminski95@gmail.com</a></p>
+        <p>Telefon: +48 123 456 789</p>
+    </div>
+</div>
+
+<!-- Ankieta -->
+<div id="poll" class="content-section" style="display:none;">
+    <div class="card">
+        <h2>Jaką muzykę chcesz usłyszeć dzisiaj?</h2>
+        <form id="pollForm">
+            <input type="radio" name="music" value="Pop"> Pop<br>
+            <input type="radio" name="music" value="Rock"> Rock<br>
+            <input type="radio" name="music" value="Hip-Hop"> Hip-Hop<br>
+            <input type="radio" name="music" value="Elektronika"> Elektronika<br><br>
+            <button type="button" onclick="submitPoll()">Głosuj</button>
+        </form>
+        <div id="pollResults"></div>
+    </div>
+</div>
+
+<!-- Aktualności -->
+<div id="news-serious" class="content-section" style="display:none;">
+    <div class="card">
+        <h2>Aktualności</h2>
+        <div id="seriousNewsList"></div>
+        <input type="text" id="seriousNewsInput" placeholder="Dodaj wydarzenie">
+        <button onclick="addSeriousNews()">Dodaj</button>
+    </div>
+</div>
+
+<!-- Social Media -->
+<div class="social">
+    <a href="https://instagram.com/RadioNajlepsza" target="_blank">📸 Instagram</a>
+    <a href="https://facebook.com/RadioNajlepsza" target="_blank">📘 Facebook</a>
+</div>
+
+</div>
+
+<footer>
+Właściciel: Marcel Kamiński &copy; 2025
+</footer>
+
+<script>
+// Zakładki
+function showSection(section) {
+    ['radio','news','contact','poll','news-serious'].forEach(sec=>{
+        document.getElementById(sec).style.display = sec===section ? 'block' : 'none';
+    });
+}
+
+// Komentarze śmieszne Wiadomości
+let comments = JSON.parse(localStorage.getItem('comments') || '[]');
+function renderComments() {
+    const newsList = document.getElementById('newsList');
+    newsList.innerHTML='';
+    comments.forEach((c,i)=>{
+        const div = document.createElement('div');
+        div.classList.add('comment');
+        div.innerHTML = `<span>${c.text}</span> <button onclick="deleteComment(${i})">🗑️</button>`;
+        newsList.appendChild(div);
+    });
+}
+function addComment(){
+    const input = document.getElementById('commentInput');
+    const text = input.value.trim();
+    if(!text) return;
+    comments.push({text});
+    localStorage.setItem('comments', JSON.stringify(comments));
+    input.value='';
+    renderComments();
+}
+function deleteComment(i){ comments.splice(i,1); localStorage.setItem('comments',JSON.stringify(comments)); renderComments();}
+renderComments();
+
+// Ankieta
+let pollVotes = JSON.parse(localStorage.getItem('pollVotes') || '{"Pop":0,"Rock":0,"Hip-Hop":0,"Elektronika":0}');
+function submitPoll(){
+    const form=document.getElementById('pollForm');
+    const selected=form.music.value;
+    if(!selected){ alert("Wybierz odpowiedź"); return;}
+    pollVotes[selected]++;
+    localStorage.setItem('pollVotes', JSON.stringify(pollVotes));
+    showPollResults();
+}
+function showPollResults(){
+    const resultsDiv=document.getElementById('pollResults');
+    let html="<h3>Wyniki:</h3>";
+    for(const g in pollVotes){ html+=`${g}: ${pollVotes[g]} głosów<br>`;}
+    resultsDiv.innerHTML=html;
+}
+showPollResults();
+
+// Aktualności poważne
+let seriousNews = JSON.parse(localStorage.getItem('seriousNews') || '[]');
+function renderSeriousNews(){
+    const list = document.getElementById('seriousNewsList');
+    list.innerHTML='';
+    seriousNews.forEach((item,i)=>{
+        const div = document.createElement('div');
+        div.classList.add('comment');
+        div.innerHTML = `<span>${item.text}</span> <button onclick="deleteSeriousNews(${i})">🗑️</button>`;
+        list.appendChild(div);
+    });
+}
+function addSeriousNews(){
+    const input=document.getElementById('seriousNewsInput');
+    const text=input.value.trim();
+    if(!text) return;
+    seriousNews.push({text});
+    localStorage.setItem('seriousNews',JSON.stringify(seriousNews));
+    input.value='';
+    renderSeriousNews();
+}
+function deleteSeriousNews(i){ seriousNews.splice(i,1); localStorage.setItem('seriousNews',JSON.stringify(seriousNews)); renderSeriousNews();}
+renderSeriousNews();
+</script>
+
+</body>
+</html>
